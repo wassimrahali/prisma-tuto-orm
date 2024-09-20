@@ -2,14 +2,13 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const { PrismaClient } = require("@prisma/client");
-const { error } = require("console");
 app.use(express.json());
 
 const prisma = new PrismaClient();
 
 app.post("/post-user", async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, role } = req.body ;
 
     if (!email || !name) {
       return res.status(400).json({ error: "Email and name are required." });
@@ -17,6 +16,7 @@ app.post("/post-user", async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
+        role,
         email,
         name,
       },
@@ -31,12 +31,7 @@ app.post("/post-user", async (req, res) => {
 
 app.get("/get-users", async (req,res) => {
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        email: true,
-        name: true,
-      },
-    });
+    const users = await prisma.user.findMany();
     res.json(users);
   } catch (error) {
     console.error("error getting users", error);
