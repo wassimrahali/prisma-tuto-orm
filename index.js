@@ -80,6 +80,27 @@ app.delete("/delete-user/:id", async (req, res) => {
   }
 });
 
+app.patch('/update-user/:id',async(req,res)=>{
+        const {id} = req.params
+        const { email, name } = req.body;
+
+
+        try {
+            const updatedUser = await prisma.user.update({
+                where: {
+                    id: parseInt(id),
+                  },
+                  data:{
+                    email,
+                    name,  
+                  }
+            })
+            res.json(updatedUser);
+        } catch (error) {
+            console.error("Can't update user !");
+            res.status(400).json({error:'Somthing got Wrong '})
+        }
+})
 
 
 
